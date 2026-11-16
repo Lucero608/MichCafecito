@@ -1,0 +1,930 @@
+
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MichCafecito - Café, Desayunos y Talleres Creativos</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ==================================================================================== -->
+    <!-- SCRIPT DE PAYPAL - REEMPLAZA 'CLIENT_ID_DE_PAYPAL_AQUI' POR TU CLIENT ID DE PAYPAL   -->
+    <!-- Ejemplo: https://www.paypal.com/sdk/js?client-id=A123XYZ...&currency=MXN            -->
+    <!-- ==================================================================================== -->
+    <script src="https://www.paypal.com/sdk/js?client-id=BAAVtyHF2tAfhQ6cMKYEVtEVwiMDzyambbB8u8rCFQSANgjP92_Ik8sSD86Cvj0mWQ2w93vh1ej1PsW3tM&currency=MXN"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        michi: {
+                            50: '#FAF5EF',
+                            100: '#F3E8DB',
+                            200: '#E5D1B8',
+                            300: '#D5B793',
+                            400: '#C49B6E',
+                            500: '#9E6D38', // Terracota cálido
+                            600: '#7E5225',
+                            700: '#5F3C18',
+                            800: '#42280E',
+                            900: '#281705',
+                        },
+                        cream: '#FFFDF9',
+                        blush: '#FBE8E7',
+                        matcha: '#E2EBD8',
+                    },
+                    fontFamily: {
+                        heading: ['Fredoka', 'sans-serif'],
+                        body: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #FAF5EF;
+            color: #42280E;
+        }
+        h1, h2, h3, h4, h5, h6, .font-heading {
+            font-family: 'Fredoka', cursive;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F3E8DB;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #C49B6E;
+            border-radius: 4px;
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-michi-50 text-michi-800 antialiased custom-scrollbar flex flex-col min-h-screen">
+
+    <!-- BARRA DE NAVEGACIÓN -->
+    <header class="sticky top-0 z-40 bg-michi-50/90 backdrop-blur-md border-b border-michi-200/60 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo MichCafecito -->
+            <a href="#inicio" class="flex items-center gap-2 group">
+                <div class="w-11 h-11 rounded-2xl bg-michi-500 text-white flex items-center justify-center text-2xl shadow-md group-hover:scale-105 transition-transform duration-300">
+                    <i class="fa-solid fa-cat"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-heading text-2xl font-bold tracking-wide text-michi-800 flex items-center gap-1">
+                        MichCafecito
+                        <i class="fa-solid fa-mug-hot text-xs text-michi-500"></i>
+                    </span>
+                    <span class="text-[10px] text-michi-500 tracking-wider uppercase font-semibold">Gatitos, Café & Arte</span>
+                </div>
+            </a>
+
+            <!-- Navegación Desktop -->
+            <nav class="hidden md:flex items-center gap-8 font-medium text-michi-700">
+                <a href="#inicio" class="hover:text-michi-500 transition-colors">Inicio</a>
+                <a href="#menu" class="hover:text-michi-500 transition-colors">Menú</a>
+                <a href="#talleres" class="hover:text-michi-500 transition-colors">Talleres</a>
+                <a href="#galeria" class="hover:text-michi-500 transition-colors">Galería</a>
+                <a href="#contacto" class="hover:text-michi-500 transition-colors">Contacto</a>
+            </nav>
+
+            <!-- Botón CTA Menú Desktop -->
+            <div class="hidden md:flex items-center gap-3">
+                <a href="#talleres" class="bg-michi-500 hover:bg-michi-600 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-all shadow-md hover:shadow-lg flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    Reservar Taller
+                </a>
+            </div>
+
+            <!-- Botón Menú Móvil -->
+            <button id="mobile-menu-btn" class="md:hidden text-2xl text-michi-800 p-2 focus:outline-none" aria-label="Abrir Menú">
+                <i class="fa-solid fa-bars" id="menu-icon"></i>
+            </button>
+        </div>
+
+        <!-- Menú Desplegable Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-michi-100 border-b border-michi-200 px-6 py-6 transition-all duration-300">
+            <div class="flex flex-col gap-4 text-center font-medium text-lg">
+                <a href="#inicio" class="mobile-link py-2 border-b border-michi-200/50">Inicio</a>
+                <a href="#menu" class="mobile-link py-2 border-b border-michi-200/50">Menú</a>
+                <a href="#talleres" class="mobile-link py-2 border-b border-michi-200/50">Talleres</a>
+                <a href="#galeria" class="mobile-link py-2 border-b border-michi-200/50">Galería</a>
+                <a href="#contacto" class="mobile-link py-2">Ubicación & Contacto</a>
+                <a href="#talleres" class="mobile-link mt-2 bg-michi-500 text-white py-3 rounded-xl font-semibold shadow flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    Reservar Taller
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECCIÓN HERO -->
+    <section id="inicio" class="relative pt-8 pb-16 lg:py-20 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Texto del Hero -->
+                <div class="space-y-6 text-center lg:text-left z-10">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blush text-michi-700 text-sm font-semibold border border-pink-200/60 shadow-sm">
+                        <i class="fa-solid fa-paw text-michi-500"></i>
+                        <span>Un espacio cálido y pet-friendly en la ciudad</span>
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-michi-900 leading-tight">
+                        Un rincón de café, <span class="text-michi-500">desayunos</span> y creatividad felina.
+                    </h1>
+                    
+                    <p class="text-lg text-michi-700 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                        En <strong>MichCafecito</strong> fusionamos el aroma del mejor café artesanal, deliciosos desayunos horneados y talleres culturales de pintura, acuarela, lectura y bordado. ¡Acompañado siempre de la compañía de nuestros michis residentes!
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#menu" class="w-full sm:w-auto px-8 py-4 bg-michi-500 hover:bg-michi-600 text-white rounded-2xl font-bold text-center transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-utensils"></i>
+                            Ver Menú
+                        </a>
+                        <a href="#talleres" class="w-full sm:w-auto px-8 py-4 bg-white hover:bg-michi-100 text-michi-800 border-2 border-michi-300 rounded-2xl font-bold text-center transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-palette"></i>
+                            Explorar Talleres
+                        </a>
+                    </div>
+
+                    <!-- Destacados rápidos -->
+                    <div class="pt-6 grid grid-cols-3 gap-4 border-t border-michi-200 text-center lg:text-left">
+                        <div>
+                            <span class="block font-heading text-2xl font-bold text-michi-800">100%</span>
+                            <span class="text-xs text-michi-600">Café de Especialidad</span>
+                        </div>
+                        <div>
+                            <span class="block font-heading text-2xl font-bold text-michi-800">+12</span>
+                            <span class="text-xs text-michi-600">Talleres al Mes</span>
+                        </div>
+                        <div>
+                            <span class="block font-heading text-2xl font-bold text-michi-800">🐾</span>
+                            <span class="text-xs text-michi-600">Michis Adoptables</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Imagen Hero / Composición -->
+                <div class="relative flex justify-center items-center">
+                    <div class="absolute -inset-4 bg-michi-200/50 rounded-full blur-3xl -z-10"></div>
+                    
+                    <div class="relative w-full max-w-md lg:max-w-lg">
+                        <!-- Imagen principal del Hero: guarda tu foto como img/hero.jpg -->
+                        <img src="img/hero.jpg" 
+                             alt="MichCafecito Ambiente" 
+                             class="rounded-3xl shadow-2xl object-cover w-full h-[420px] border-4 border-white"
+                             onerror="this.src='https://placehold.co/800x600/C49B6E/ffffff?text=img/hero.jpg'">
+                        
+                        <!-- Tarjeta Flotante 1: Latte Michi -->
+                        <div class="absolute -bottom-6 -left-4 sm:-left-6 bg-white p-4 rounded-2xl shadow-xl border border-michi-100 flex items-center gap-3 animate-float max-w-[240px] sm:max-w-xs">
+                            <div class="w-11 h-11 bg-blush rounded-xl flex items-center justify-center text-xl text-michi-500 flex-shrink-0">
+                                ☕
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm text-michi-900">Arte Latte Felino</h4>
+                                <p class="text-xs text-michi-600">Espuma detallada de gatito</p>
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta Flotante 2: Talleres -->
+                        <div class="absolute -top-6 -right-4 sm:-right-6 bg-white p-4 rounded-2xl shadow-xl border border-michi-100 flex items-center gap-3 hidden sm:flex max-w-xs">
+                            <div class="w-11 h-11 bg-matcha rounded-xl flex items-center justify-center text-xl text-michi-700 flex-shrink-0">
+                                🎨
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm text-michi-900">Pintura & Cerámica</h4>
+                                <p class="text-xs text-michi-600">Incluye café y materiales</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DE MENÚ DE BEBIDAS Y DESAYUNOS (TABS) -->
+    <section id="menu" class="py-16 bg-cream border-y border-michi-200/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-michi-500 font-semibold tracking-wider uppercase text-xs bg-michi-100 px-3 py-1 rounded-full">Sabor & Calidez</span>
+                <h2 class="text-3xl sm:text-4xl font-bold text-michi-900 mt-2">Nuestro Menú Especial</h2>
+                <p class="text-michi-600 mt-2">Preparado con ingredientes frescos, grano de especialidad y nuestro característico toque gatuno.</p>
+                
+                <!-- Botones de Pestañas (Tabs) -->
+                <div class="flex justify-center gap-2 sm:gap-4 mt-8 bg-michi-100 p-1.5 rounded-2xl max-w-md mx-auto">
+                    <button id="btn-cafes" onclick="switchTab('cafes')" class="tab-btn flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all bg-michi-500 text-white shadow">
+                        <i class="fa-solid fa-mug-hot mr-1.5"></i> Cafetería & Bebidas
+                    </button>
+                    <button id="btn-desayunos" onclick="switchTab('desayunos')" class="tab-btn flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all text-michi-700 hover:text-michi-900">
+                        <i class="fa-solid fa-egg mr-1.5"></i> Desayunos & Brunch
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 1: CAFETERÍA & BEBIDAS -->
+            <div id="tab-cafes" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-michi-50 p-5 rounded-3xl border border-michi-200 hover:shadow-lg transition-all flex gap-4 items-center">
+                    <!-- Guarda como img/cafe-latte.jpg -->
+                    <img src="img/cafe-latte.jpg" alt="Cappuccino Michi" class="w-24 h-24 rounded-2xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/200x200/C49B6E/ffffff?text=cafe-latte.jpg'">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start gap-1">
+                            <h3 class="font-bold text-lg text-michi-900">Michi Latte 🐾</h3>
+                            <span class="font-heading font-bold text-michi-600 bg-blush px-2.5 py-1 rounded-lg text-xs flex-shrink-0">$68 MXN</span>
+                        </div>
+                        <p class="text-xs text-michi-600 mt-1.5">Espresso artesanal con leche cremada y cara de gatito en 3D esculpida en espuma.</p>
+                    </div>
+                </div>
+
+                <div class="bg-michi-50 p-5 rounded-3xl border border-michi-200 hover:shadow-lg transition-all flex gap-4 items-center">
+                    <!-- Guarda como img/cafe-caramelo.jpg -->
+                    <img src="img/cafe-caramelo.jpg" alt="Latte Vainilla" class="w-24 h-24 rounded-2xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/200x200/C49B6E/ffffff?text=cafe-caramelo.jpg'">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start gap-1">
+                            <h3 class="font-bold text-lg text-michi-900">Caramel Ronroneo</h3>
+                            <span class="font-heading font-bold text-michi-600 bg-blush px-2.5 py-1 rounded-lg text-xs flex-shrink-0">$75 MXN</span>
+                        </div>
+                        <p class="text-xs text-michi-600 mt-1.5">Café espresso con jarabe de caramelo salado casero, leche de almendra y galleta huellita.</p>
+                    </div>
+                </div>
+
+                <div class="bg-michi-50 p-5 rounded-3xl border border-michi-200 hover:shadow-lg transition-all flex gap-4 items-center">
+                    <!-- Guarda como img/cafe-matcha.jpg -->
+                    <img src="img/cafe-matcha.jpg" alt="Matcha Latte" class="w-24 h-24 rounded-2xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/200x200/C49B6E/ffffff?text=cafe-matcha.jpg'">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start gap-1">
+                            <h3 class="font-bold text-lg text-michi-900">Matcha Gatuno 🍵</h3>
+                            <span class="font-heading font-bold text-michi-600 bg-blush px-2.5 py-1 rounded-lg text-xs flex-shrink-0">$78 MXN</span>
+                        </div>
+                        <p class="text-xs text-michi-600 mt-1.5">Té matcha orgánico importado de Uji, Japón, servido frío o caliente con suave espuma.</p>
+                    </div>
+                </div>
+
+                <div class="bg-michi-50 p-5 rounded-3xl border border-michi-200 hover:shadow-lg transition-all flex gap-4 items-center">
+                    <!-- Guarda como img/cafe-moka.jpg -->
+                    <img src="img/cafe-moka.jpg" alt="Mocha Frio" class="w-24 h-24 rounded-2xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/200x200/C49B6E/ffffff?text=cafe-moka.jpg'">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start gap-1">
+                            <h3 class="font-bold text-lg text-michi-900">Mocha Bigotes 🍫</h3>
+                            <span class="font-heading font-bold text-michi-600 bg-blush px-2.5 py-1 rounded-lg text-xs flex-shrink-0">$72 MXN</span>
+                        </div>
+                        <p class="text-xs text-michi-600 mt-1.5">Infusión de cacao criollo de Oaxaca, espresso de altura y crema batida artesanal.</p>
+                    </div>
+                </div>
+
+                <div class="bg-michi-50 p-5 rounded-3xl border border-michi-200 hover:shadow-lg transition-all flex gap-4 items-center">
+                    <!-- Guarda como img/cafe-espresso.jpg -->
+                    <img src="img/cafe-espresso.jpg" alt="Espresso" class="w-24 h-24 rounded-2xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/200x200/C49B6E/ffffff?text=cafe-espresso.jpg'">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start gap-1">
+                            <h3 class="font-bold text-lg text-michi-900">Espresso Doble</h3>
+                            <span class="font-heading font-bold text-michi-600 bg-blush px-2.5 py-1 rounded-lg text-xs flex-shrink-0">$48 MXN</span>
+                        </div>
+                        <p class="text-xs text-michi-600 mt-1.5">Extracción directa de grano 100% arábica de Chiapas con notas florales y achocolatadas.</p>
+                    </div>
+                </div>
+
+                <div class="bg-michi-50 p-5 rounded-3xl border border-michi-200 hover:shadow-lg transition-all flex gap-4 items-center">
+                    <!-- Guarda como img/cafe-tisana.jpg -->
+                    <img src="img/cafe-tisana.jpg" alt="Té Frutal" class="w-24 h-24 rounded-2xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/200x200/C49B6E/ffffff?text=cafe-tisana.jpg'">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start gap-1">
+                            <h3 class="font-bold text-lg text-michi-900">Tisana Relax Michi</h3>
+                            <span class="font-heading font-bold text-michi-600 bg-blush px-2.5 py-1 rounded-lg text-xs flex-shrink-0">$58 MXN</span>
+                        </div>
+                        <p class="text-xs text-michi-600 mt-1.5">Mezcla herbal de lavanda, manzanilla, menta fresca y trocitos de manzana deshidratada.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: DESAYUNOS & BRUNCH -->
+            <div id="tab-desayunos" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                <div class="bg-michi-50 p-5 rounded-3xl border border-michi-200 hover:shadow-lg transition-all flex gap-4 items-center">
+                    <!-- Guarda como img/desayuno-hotcakes.jpg -->
+                    <img src="img/desayuno-hotcakes.jpg" alt="Hotcakes Felinos" class="w-24 h-24 rounded-2xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/200x200/C49B6E/ffffff?text=desayuno-hotcakes.jpg'">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start gap-1">
+                            <h3 class="font-bold text-lg text-michi-900">Michi Hotcakes 🥞</h3>
+                            <span class="font-heading font-bold text-michi-600 bg-blush px-2.5 py-1 rounded-lg text-xs flex-shrink-0">$120 MXN</span>
+                        </div>
+                        <p class="text-xs text-michi-600 mt-1.5">Hotcakes esponjosos con silueta de carita de gato, frutos rojos, mermelada y miel de agave.</p>
+                    </div>
+                </div>
+
+                <div class="bg-michi-50 p-5 rounded-3xl border border-michi-200 hover:shadow-lg transition-all flex gap-4 items-center">
+                    <!-- Guarda como img/desayuno-molletes.jpg -->
+                    <img src="img/desayuno-molletes.jpg" alt="Avocado Toast" class="w-24 h-24 rounded-2xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/200x200/C49B6E/ffffff?text=desayuno-molletes.jpg'">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start gap-1">
+                            <h3 class="font-bold text-lg text-michi-900">Avocado Toast 🥑</h3>
+                            <span class="font-heading font-bold text-michi-600 bg-blush px-2.5 py-1 rounded-lg text-xs flex-shrink-0">$130 MXN</span>
+                        </div>
+                        <p class="text-xs text-michi-600 mt-1.5">Pan de masa madre, mousse de aguacate, huevo pochado, semillas de girasol y toque de chile.</p>
+                    </div>
+                </div>
+
+                <div class="bg-michi-50 p-5 rounded-3xl border border-michi-200 hover:shadow-lg transition-all flex gap-4 items-center">
+                    <!-- Guarda como img/desayuno-chilaquiles.jpg -->
+                    <img src="img/desayuno-chilaquiles.jpg" alt="Chilaquiles" class="w-24 h-24 rounded-2xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/200x200/C49B6E/ffffff?text=desayuno-chilaquiles.jpg'">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start gap-1">
+                            <h3 class="font-bold text-lg text-michi-900">Chilaquiles Michi 🌶️</h3>
+                            <span class="font-heading font-bold text-michi-600 bg-blush px-2.5 py-1 rounded-lg text-xs flex-shrink-0">$135 MXN</span>
+                        </div>
+                        <p class="text-xs text-michi-600 mt-1.5">Totopos de tortilla horneados, salsa verde esmeralda o roja de chile morita, crema y queso de rancho.</p>
+                    </div>
+                </div>
+
+                <div class="bg-michi-50 p-5 rounded-3xl border border-michi-200 hover:shadow-lg transition-all flex gap-4 items-center">
+                    <!-- Guarda como img/desayuno-concha.jpg -->
+                    <img src="img/desayuno-concha.jpg" alt="Concha Dulce" class="w-24 h-24 rounded-2xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/200x200/C49B6E/ffffff?text=desayuno-concha.jpg'">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start gap-1">
+                            <h3 class="font-bold text-lg text-michi-900">Concha Felina 🥐</h3>
+                            <span class="font-heading font-bold text-michi-600 bg-blush px-2.5 py-1 rounded-lg text-xs flex-shrink-0">$45 MXN</span>
+                        </div>
+                        <p class="text-xs text-michi-600 mt-1.5">Pan dulce artesanal recién horneado cada mañana con cubierta de chocolate o vainilla con orejitas.</p>
+                    </div>
+                </div>
+
+                <div class="bg-michi-50 p-5 rounded-3xl border border-michi-200 hover:shadow-lg transition-all flex gap-4 items-center">
+                    <!-- Guarda como img/desayuno-croissant.jpg -->
+                    <img src="img/desayuno-croissant.jpg" alt="Croissant" class="w-24 h-24 rounded-2xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/200x200/C49B6E/ffffff?text=desayuno-croissant.jpg'">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start gap-1">
+                            <h3 class="font-bold text-lg text-michi-900">Croissant Michi-Ham</h3>
+                            <span class="font-heading font-bold text-michi-600 bg-blush px-2.5 py-1 rounded-lg text-xs flex-shrink-0">$115 MXN</span>
+                        </div>
+                        <p class="text-xs text-michi-600 mt-1.5">Hojaldre mantequilloso relleno de pechuga de pavo, queso gouda derretido y aderezo miel-mostaza.</p>
+                    </div>
+                </div>
+
+                <div class="bg-michi-50 p-5 rounded-3xl border border-michi-200 hover:shadow-lg transition-all flex gap-4 items-center">
+                    <!-- Guarda como img/desayuno-waffles.jpg -->
+                    <img src="img/desayuno-waffles.jpg" alt="Waffles" class="w-24 h-24 rounded-2xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/200x200/C49B6E/ffffff?text=desayuno-waffles.jpg'">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start gap-1">
+                            <h3 class="font-bold text-lg text-michi-900">Waffles Crujientes 🧇</h3>
+                            <span class="font-heading font-bold text-michi-600 bg-blush px-2.5 py-1 rounded-lg text-xs flex-shrink-0">$125 MXN</span>
+                        </div>
+                        <p class="text-xs text-michi-600 mt-1.5">Servidos con bola de helado artesanal de vainilla, rodajas de plátano y jarabe de chocolate.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DE TALLERES CULTURALES Y CREATIVOS -->
+    <section id="talleres" class="py-16 bg-michi-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-michi-500 font-semibold tracking-wider uppercase text-xs bg-blush px-3 py-1 rounded-full">Espacio Cultural</span>
+                <h2 class="text-3xl sm:text-4xl font-bold text-michi-900 mt-2">Próximos Talleres Creativos</h2>
+                <p class="text-michi-600 mt-2">Aprende nuevas disciplinas, explora tu talento artístico y disfruta de una experiencia relajante con un buen café en mano.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Taller 1: Pintura en Cerámica -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-md border border-michi-200 hover:shadow-xl transition-all flex flex-col group">
+                    <div class="relative overflow-hidden h-48">
+                        <!-- Guarda como img/taller-pintura.jpg -->
+                        <img src="img/taller-pintura.jpg" 
+                             alt="Pintura en Cerámica" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/600x400/C49B6E/ffffff?text=taller-pintura.jpg'">
+                        <span class="absolute top-3 right-3 bg-michi-500 text-white font-bold text-[11px] px-3 py-1 rounded-full shadow">
+                            Sáb 14 Nov - 11:00 AM
+                        </span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-1.5 text-michi-500 text-xs font-bold uppercase mb-2">
+                                <i class="fa-solid fa-palette"></i> Cerámica & Arte
+                            </div>
+                            <h3 class="font-bold text-lg text-michi-900 mb-2">Pintura de Tazas & Cerámica</h3>
+                            <p class="text-xs text-michi-600 mb-4 leading-relaxed">Pinta y decora tu propia taza o plato felino de cerámica. Incluye pieza, esmaltado, horneado y bebida a elección.</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center border-t border-michi-100 pt-3 mb-4">
+                                <div>
+                                    <span class="text-[10px] text-michi-500 block">Costo:</span>
+                                    <span class="font-bold text-base text-michi-800">$380 MXN</span>
+                                </div>
+                                <span class="text-xs bg-matcha text-michi-800 font-semibold px-2.5 py-1 rounded-md">6 Cupos</span>
+                            </div>
+                            <button onclick="openBookingModal('Pintura de Tazas & Cerámica', 'Sábado 14 de Noviembre - 11:00 AM', 380)" class="w-full py-2.5 bg-michi-500 hover:bg-michi-600 text-white rounded-xl font-bold text-sm transition-all text-center shadow flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-ticket text-xs"></i>
+                                Reservar & Pagar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Taller 2: Club de Lectura -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-md border border-michi-200 hover:shadow-xl transition-all flex flex-col group">
+                    <div class="relative overflow-hidden h-48">
+                        <!-- Guarda como img/taller-lectura.jpg -->
+                        <img src="img/taller-lectura.jpg" 
+                             alt="Club de Lectura" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/600x400/C49B6E/ffffff?text=taller-lectura.jpg'">
+                        <span class="absolute top-3 right-3 bg-michi-500 text-white font-bold text-[11px] px-3 py-1 rounded-full shadow">
+                            Jue 19 Nov - 6:30 PM
+                        </span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-1.5 text-michi-500 text-xs font-bold uppercase mb-2">
+                                <i class="fa-solid fa-book-open"></i> Literatura
+                            </div>
+                            <h3 class="font-bold text-lg text-michi-900 mb-2">Club de Lectura & Café</h3>
+                            <p class="text-xs text-michi-600 mb-4 leading-relaxed">Charlamos sobre la novela del mes en una atmósfera relajada e íntima. Incluye taza de café de filtro y repostería.</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center border-t border-michi-100 pt-3 mb-4">
+                                <div>
+                                    <span class="text-[10px] text-michi-500 block">Costo:</span>
+                                    <span class="font-bold text-base text-michi-800">$160 MXN</span>
+                                </div>
+                                <span class="text-xs bg-matcha text-michi-800 font-semibold px-2.5 py-1 rounded-md">4 Cupos</span>
+                            </div>
+                            <button onclick="openBookingModal('Club de Lectura & Café', 'Jueves 19 de Noviembre - 6:30 PM', 160)" class="w-full py-2.5 bg-michi-500 hover:bg-michi-600 text-white rounded-xl font-bold text-sm transition-all text-center shadow flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-ticket text-xs"></i>
+                                Reservar & Pagar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Taller 3: Bordado Felino -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-md border border-michi-200 hover:shadow-xl transition-all flex flex-col group">
+                    <div class="relative overflow-hidden h-48">
+                        <!-- Guarda como img/taller-bordado.jpg -->
+                        <img src="img/taller-bordado.jpg" 
+                             alt="Taller de Bordado" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/600x400/C49B6E/ffffff?text=taller-bordado.jpg'">
+                        <span class="absolute top-3 right-3 bg-michi-500 text-white font-bold text-[11px] px-3 py-1 rounded-full shadow">
+                            Dom 22 Nov - 3:00 PM
+                        </span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-1.5 text-michi-500 text-xs font-bold uppercase mb-2">
+                                <i class="fa-solid fa-scissors"></i> Textil & Aguja
+                            </div>
+                            <h3 class="font-bold text-lg text-michi-900 mb-2">Taller de Bordado Felino</h3>
+                            <p class="text-xs text-michi-600 mb-4 leading-relaxed">Aprende puntadas básicas y crea una pieza textil con diseño de gatitos. Incluye bastidor de madera, hilos y té.</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center border-t border-michi-100 pt-3 mb-4">
+                                <div>
+                                    <span class="text-[10px] text-michi-500 block">Costo:</span>
+                                    <span class="font-bold text-base text-michi-800">$340 MXN</span>
+                                </div>
+                                <span class="text-xs bg-matcha text-michi-800 font-semibold px-2.5 py-1 rounded-md">8 Cupos</span>
+                            </div>
+                            <button onclick="openBookingModal('Taller de Bordado Felino', 'Domingo 22 de Noviembre - 3:00 PM', 340)" class="w-full py-2.5 bg-michi-500 hover:bg-michi-600 text-white rounded-xl font-bold text-sm transition-all text-center shadow flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-ticket text-xs"></i>
+                                Reservar & Pagar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Taller 4: Acuarela con Gatitos -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-md border border-michi-200 hover:shadow-xl transition-all flex flex-col group">
+                    <div class="relative overflow-hidden h-48">
+                        <!-- Guarda como img/taller-acuarela.jpg -->
+                        <img src="img/taller-acuarela.jpg" 
+                             alt="Acuarela Ilustración" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/600x400/C49B6E/ffffff?text=taller-acuarela.jpg'">
+                        <span class="absolute top-3 right-3 bg-michi-500 text-white font-bold text-[11px] px-3 py-1 rounded-full shadow">
+                            Sáb 28 Nov - 4:00 PM
+                        </span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-1.5 text-michi-500 text-xs font-bold uppercase mb-2">
+                                <i class="fa-solid fa-paintbrush"></i> Ilustración
+                            </div>
+                            <h3 class="font-bold text-lg text-michi-900 mb-2">Acuarela & Ilustración</h3>
+                            <p class="text-xs text-michi-600 mb-4 leading-relaxed">Técnicas de acuarela botánica y gatuna para principiantes. Te llevas tu lámina enmarcada + bebida especial.</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center border-t border-michi-100 pt-3 mb-4">
+                                <div>
+                                    <span class="text-[10px] text-michi-500 block">Costo:</span>
+                                    <span class="font-bold text-base text-michi-800">$310 MXN</span>
+                                </div>
+                                <span class="text-xs bg-matcha text-michi-800 font-semibold px-2.5 py-1 rounded-md">5 Cupos</span>
+                            </div>
+                            <button onclick="openBookingModal('Acuarela & Ilustración', 'Sábado 28 de Noviembre - 4:00 PM', 310)" class="w-full py-2.5 bg-michi-500 hover:bg-michi-600 text-white rounded-xl font-bold text-sm transition-all text-center shadow flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-ticket text-xs"></i>
+                                Reservar & Pagar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- GALERÍA DE EXPERIENCIAS (LIGHTBOX) -->
+    <section id="galeria" class="py-16 bg-cream border-t border-michi-200/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-michi-500 font-semibold tracking-wider uppercase text-xs bg-michi-100 px-3 py-1 rounded-full">Momentos MichCafecito</span>
+                <h2 class="text-3xl sm:text-4xl font-bold text-michi-900 mt-2">Galería & Experiencia</h2>
+                <p class="text-michi-600 mt-2">Un vistazo a nuestro cálido espacio, a nuestros michis y a la creatividad de nuestra comunidad.</p>
+            </div>
+
+            <!-- Grid de Galería (Guarda como img/galeria-1.jpg a img/galeria-4.jpg) -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="relative overflow-hidden rounded-2xl group cursor-pointer h-56" onclick="openLightbox('img/galeria-1.jpg')">
+                    <img src="img/galeria-1.jpg" alt="Gato MichCafecito" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://placehold.co/500x500/C49B6E/ffffff?text=galeria-1.jpg'">
+                    <div class="absolute inset-0 bg-michi-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                        <i class="fa-solid fa-magnifying-glass-plus text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="relative overflow-hidden rounded-2xl group cursor-pointer h-56" onclick="openLightbox('img/galeria-2.jpg')">
+                    <img src="img/galeria-2.jpg" alt="Espacio de Cafetería" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://placehold.co/500x500/C49B6E/ffffff?text=galeria-2.jpg'">
+                    <div class="absolute inset-0 bg-michi-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                        <i class="fa-solid fa-magnifying-glass-plus text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="relative overflow-hidden rounded-2xl group cursor-pointer h-56" onclick="openLightbox('img/galeria-3.jpg')">
+                    <img src="img/galeria-3.jpg" alt="Taller de pintura" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://placehold.co/500x500/C49B6E/ffffff?text=galeria-3.jpg'">
+                    <div class="absolute inset-0 bg-michi-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                        <i class="fa-solid fa-magnifying-glass-plus text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="relative overflow-hidden rounded-2xl group cursor-pointer h-56" onclick="openLightbox('img/galeria-4.jpg')">
+                    <img src="img/galeria-4.jpg" alt="Café y Postres" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://placehold.co/500x500/C49B6E/ffffff?text=galeria-4.jpg'">
+                    <div class="absolute inset-0 bg-michi-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                        <i class="fa-solid fa-magnifying-glass-plus text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- UBICACIÓN, HORARIOS Y CONTACTO -->
+    <section id="contacto" class="py-16 bg-michi-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-start">
+                
+                <!-- Información de Ubicación & Horarios -->
+                <div class="space-y-6">
+                    <div>
+                        <span class="text-michi-500 font-semibold tracking-wider uppercase text-xs bg-blush px-3 py-1 rounded-full">Visítanos</span>
+                        <h2 class="text-3xl sm:text-4xl font-bold text-michi-900 mt-2">¿Dónde nos encuentras?</h2>
+                        <p class="text-michi-600 mt-2">Te esperamos con los brazos abiertos, un ronroneo y una taza caliente.</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl border border-michi-200 shadow-sm space-y-5">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-michi-100 text-michi-600 rounded-xl flex items-center justify-center text-lg flex-shrink-0">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-michi-900">Ubicación</h4>
+                                <p class="text-sm text-michi-600">Calle Arte & Creatividad #142, Coyoacán, Ciudad de México.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-michi-100 text-michi-600 rounded-xl flex items-center justify-center text-lg flex-shrink-0">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-michi-900">Horarios de Atención</h4>
+                                <p class="text-sm text-michi-600">Martes a Viernes: 8:30 AM – 8:30 PM</p>
+                                <p class="text-sm text-michi-600">Sábados y Domingos: 9:00 AM – 9:00 PM</p>
+                                <p class="text-xs text-michi-500 font-semibold mt-1">Lunes: Cerrado por descanso felino 🐾</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-michi-100 text-michi-600 rounded-xl flex items-center justify-center text-lg flex-shrink-0">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-michi-900">Contacto Directo</h4>
+                                <p class="text-sm text-michi-600">+52 (55) 8765-4321</p>
+                                <p class="text-sm text-michi-600">hola@michcafecito.com</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Redes Sociales -->
+                    <div class="flex items-center gap-4">
+                        <span class="text-xs font-bold text-michi-700 uppercase">Síguenos:</span>
+                        <a href="#" class="w-11 h-11 rounded-2xl bg-white border border-michi-200 text-michi-700 flex items-center justify-center text-lg hover:bg-michi-500 hover:text-white transition-all shadow-sm">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-11 h-11 rounded-2xl bg-white border border-michi-200 text-michi-700 flex items-center justify-center text-lg hover:bg-michi-500 hover:text-white transition-all shadow-sm">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-11 h-11 rounded-2xl bg-white border border-michi-200 text-michi-700 flex items-center justify-center text-lg hover:bg-michi-500 hover:text-white transition-all shadow-sm">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Formulario de Contacto / Reserva de Mesa -->
+                <div class="bg-white p-8 rounded-3xl border border-michi-200 shadow-lg">
+                    <h3 class="font-bold text-2xl text-michi-900 mb-2">Envíanos un mensaje o reserva tu mesa</h3>
+                    <p class="text-xs text-michi-600 mb-6">¿Tienes preguntas sobre los talleres o quieres reservar para una fecha especial?</p>
+
+                    <form id="contact-form" onsubmit="handleContactSubmit(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-michi-700 uppercase mb-1">Nombre Completo</label>
+                            <input type="text" required placeholder="Tu nombre" class="w-full px-4 py-3 rounded-xl border border-michi-200 focus:outline-none focus:border-michi-500 text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-michi-700 uppercase mb-1">Correo Electrónico</label>
+                            <input type="email" required placeholder="tu@email.com" class="w-full px-4 py-3 rounded-xl border border-michi-200 focus:outline-none focus:border-michi-500 text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-michi-700 uppercase mb-1">Tipo de Solicitud</label>
+                            <select class="w-full px-4 py-3 rounded-xl border border-michi-200 focus:outline-none focus:border-michi-500 text-sm text-michi-700">
+                                <option>Reserva de Mesa</option>
+                                <option>Dudas sobre Talleres</option>
+                                <option>Eventos Privados</option>
+                                <option>Información de Adopción</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-michi-700 uppercase mb-1">Mensaje</label>
+                            <textarea rows="3" required placeholder="Escribe aquí tu mensaje..." class="w-full px-4 py-3 rounded-xl border border-michi-200 focus:outline-none focus:border-michi-500 text-sm"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 bg-michi-500 hover:bg-michi-600 text-white font-bold rounded-xl shadow transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            Enviar Mensaje
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-michi-900 text-michi-200 py-10 mt-auto border-t border-michi-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-xl bg-michi-500 text-white flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-cat"></i>
+                </div>
+                <span class="font-heading text-xl font-bold text-white">MichCafecito</span>
+            </div>
+
+            <p class="text-xs text-michi-400">
+                &copy; MichCafecito. Todos los derechos reservados. Diseñado para los amantes del buen café y los gatos. 🐾
+            </p>
+
+            <div class="flex gap-6 text-xs text-michi-400">
+                <a href="#" class="hover:text-white transition-colors">Aviso de Privacidad</a>
+                <a href="#" class="hover:text-white transition-colors">Términos del Servicio</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL DE INSCRIPCIÓN Y PAGO CON PAYPAL -->
+    <div id="booking-modal" class="fixed inset-0 bg-michi-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-michi-200 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <button onclick="closeBookingModal()" class="absolute top-4 right-4 text-michi-400 hover:text-michi-800 text-xl p-2 z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-blush text-michi-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-2">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <h3 class="font-bold text-2xl text-michi-900">Reserva & Pago de Taller</h3>
+                <p id="modal-workshop-title" class="text-sm font-bold text-michi-600 mt-1"></p>
+                <p id="modal-workshop-date" class="text-xs text-michi-500 mb-2"></p>
+                <div class="inline-block bg-michi-100 text-michi-800 font-bold px-4 py-1.5 rounded-full text-sm">
+                    Total a pagar: $<span id="modal-workshop-price">0</span> MXN
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-michi-700 uppercase mb-1">Nombre Completo</label>
+                    <input type="text" id="buyer-name" required placeholder="Tu nombre completo" class="w-full px-4 py-2.5 rounded-xl border border-michi-200 focus:outline-none focus:border-michi-500 text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-michi-700 uppercase mb-1">Teléfono / WhatsApp</label>
+                    <input type="tel" id="buyer-phone" required placeholder="55 1234 5678" class="w-full px-4 py-2.5 rounded-xl border border-michi-200 focus:outline-none focus:border-michi-500 text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-michi-700 uppercase mb-1">Número de Lugares</label>
+                    <input type="number" id="buyer-qty" min="1" max="4" value="1" onchange="updateTotalPrice()" class="w-full px-4 py-2.5 rounded-xl border border-michi-200 focus:outline-none focus:border-michi-500 text-sm">
+                </div>
+
+                <div class="border-t border-michi-200 pt-4 mt-4">
+                    <label class="block text-xs font-bold text-michi-700 uppercase mb-2 text-center">Paga de forma segura con PayPal / Tarjeta</label>
+                    
+                    <!-- CONTENEDOR DONDE SE RENDERIZAN LOS BOTONES DE PAYPAL -->
+                    <div id="paypal-button-container" class="z-0 relative min-h-[120px]"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX PARA AMPLIAR FOTOS DE GALERÍA -->
+    <div id="lightbox" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden" onclick="closeLightbox()">
+        <div class="relative max-w-4xl w-full max-h-[90vh]">
+            <img id="lightbox-img" src="" alt="Imagen ampliada" class="w-full h-full object-contain rounded-2xl">
+            <button onclick="closeLightbox()" class="absolute -top-10 right-0 text-white text-3xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="custom-toast" class="fixed bottom-6 right-6 bg-michi-800 text-white px-6 py-4 rounded-2xl shadow-2xl z-50 transform translate-y-32 transition-transform duration-300 flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-green-400 text-xl"></i>
+        <span id="toast-message" class="text-sm font-semibold">¡Operación realizada con éxito!</span>
+    </div>
+
+    <!-- JAVASCRIPT DE LÓGICA E INTERACCIÓN -->
+    <script>
+        // Variables globales para la reserva actual
+        let currentWorkshop = {
+            title: '',
+            date: '',
+            basePrice: 0,
+            totalAmount: 0
+        };
+
+        // Control de Menú Móvil
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Cambio de Pestañas del Menú
+        function switchTab(tab) {
+            const btnCafes = document.getElementById('btn-cafes');
+            const btnDesayunos = document.getElementById('btn-desayunos');
+            const tabCafes = document.getElementById('tab-cafes');
+            const tabDesayunos = document.getElementById('tab-desayunos');
+
+            if (tab === 'cafes') {
+                btnCafes.className = "tab-btn flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all bg-michi-500 text-white shadow";
+                btnDesayunos.className = "tab-btn flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all text-michi-700 hover:text-michi-900";
+                tabCafes.classList.remove('hidden');
+                tabDesayunos.classList.add('hidden');
+            } else {
+                btnDesayunos.className = "tab-btn flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all bg-michi-500 text-white shadow";
+                btnCafes.className = "tab-btn flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all text-michi-700 hover:text-michi-900";
+                tabDesayunos.classList.remove('hidden');
+                tabCafes.classList.add('hidden');
+            }
+        }
+
+        // Modal de Reserva y Pago
+        const bookingModal = document.getElementById('booking-modal');
+
+        function openBookingModal(title, date, price) {
+            currentWorkshop.title = title;
+            currentWorkshop.date = date;
+            currentWorkshop.basePrice = price;
+            currentWorkshop.totalAmount = price;
+
+            document.getElementById('modal-workshop-title').innerText = title;
+            document.getElementById('modal-workshop-date').innerText = date;
+            document.getElementById('buyer-qty').value = 1;
+            document.getElementById('modal-workshop-price').innerText = price;
+
+            bookingModal.classList.remove('hidden');
+
+            // Renderizar / Reiniciar Botones de PayPal
+            renderPayPalButtons();
+        }
+
+        function updateTotalPrice() {
+            const qty = parseInt(document.getElementById('buyer-qty').value) || 1;
+            currentWorkshop.totalAmount = currentWorkshop.basePrice * qty;
+            document.getElementById('modal-workshop-price').innerText = currentWorkshop.totalAmount;
+        }
+
+        function closeBookingModal() {
+            bookingModal.classList.add('hidden');
+            document.getElementById('paypal-button-container').innerHTML = ''; // Limpiar botones
+        }
+
+        // INTEGRACIÓN DE BOTONES DE PAYPAL
+        function renderPayPalButtons() {
+            const container = document.getElementById('paypal-button-container');
+            container.innerHTML = ''; // Limpiar cualquier render previo
+
+            if (typeof paypal !== 'undefined') {
+                paypal.Buttons({
+                    style: {
+                        layout: 'vertical',
+                        color:  'gold',
+                        shape:  'rect',
+                        label:  'paypal'
+                    },
+                    createOrder: function(data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                description: `Reserva: ${currentWorkshop.title}`,
+                                amount: {
+                                    currency_code: 'MXN',
+                                    value: currentWorkshop.totalAmount.toString()
+                                }
+                            }]
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        return actions.order.capture().then(function(details) {
+                            closeBookingModal();
+                            showToast(`¡Pago exitoso, ${details.payer.name.given_name}! Tu lugar para "${currentWorkshop.title}" está reservado.`);
+                        });
+                    },
+                    onError: function(err) {
+                        console.error('Error al procesar pago con PayPal:', err);
+                        showToast('Hubo un inconveniente al procesar el pago. Intenta de nuevo.');
+                    }
+                }).render('#paypal-button-container');
+            } else {
+                container.innerHTML = `<div class="text-xs text-center text-red-500 font-bold p-3 bg-red-50 rounded-xl">Recuerda colocar tu Client ID válido en el script de PayPal del código HTML.</div>`;
+            }
+        }
+
+        // Formulario de Contacto
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            e.target.reset();
+            showToast("¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.");
+        }
+
+        // Notificación Toast
+        function showToast(message) {
+            const toast = document.getElementById('custom-toast');
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.remove('translate-y-32');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-32');
+            }, 4000);
+        }
+
+        // Lightbox para Galería de Fotos
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').classList.remove('hidden');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
+```
